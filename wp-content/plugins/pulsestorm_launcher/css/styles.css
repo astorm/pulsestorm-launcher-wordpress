@@ -1,0 +1,45 @@
+body
+{
+    /* background-color:#f00; */
+}
+
+#pulsestorm_launcher_results input
+{
+    width:100%;
+    font-size:18px;
+}
+
+#pulsestorm_launcher_results ul
+{
+    margin:0;
+    padding:0;
+}
+
+#pulsestorm_launcher_results ul li
+{
+    width:100%;
+    background-color:#fff;
+    margin:0;
+    padding:10px 0 10px 5px;    
+    font-size:18px;
+    cursor:pointer;
+}
+
+#pulsestorm_launcher_results ul li a
+{
+    cursor:pointer;
+}
+
+#pulsestorm_launcher_results ul li.active
+{
+    background-color:#eee;   
+}
+
+#pulsestorm_launcher_results ul li a:link
+{
+    text-decoration:none;
+}
+
+#wp-admin-bar-pulsestorm_launcher_link div.ab-empty-item{
+    cursor:pointer;
+}
