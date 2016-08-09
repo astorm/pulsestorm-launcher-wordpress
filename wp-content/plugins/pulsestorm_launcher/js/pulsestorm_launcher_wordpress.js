@@ -69,8 +69,43 @@ jQuery(function(){
         }            
     };                
     
+    var resetWordpressHacks = function(){        
+        //remove these styles from body if they exist
+        var classes = ['about-php','plugin-install-php','import-php',
+            'plugins-php','update-core-php','index-php'];
+        var removed = [];
+        $.each(classes, function(k,v){
+            if(!$('body').hasClass(v)) { return; }
+            removed.push(v);
+            $('body').removeClass(v);
+        });                
+        
+        var tb_position_original = window.tb_position;
+        
+        //some wordpress pages redefine this function which breaks
+        //the thickbox, so we need to reset it here.  
+        window.tb_position = function() {
+            var isIE6 = typeof document.body.style.maxHeight === "undefined";
+            jQuery("#TB_window").css({marginLeft: '-' + parseInt((TB_WIDTH / 2),10) + 'px', width: TB_WIDTH + 'px'});
+            if ( ! isIE6 ) { // take away IE6
+                jQuery("#TB_window").css({marginTop: '-' + parseInt((TB_HEIGHT / 2),10) + 'px'});
+            }
+        }
+
+        var tb_remove_original = window.tb_remove;
+        window.tb_remove = function()
+        {
+            $.each(removed, function(k,v){
+                $('body').addClass(v);
+                window.tb_position = tb_position_original;
+            });
+            tb_remove_original();
+        } 
+    }
+    
     var handlerForOpeningLauncher = function(){
         var openLauncher = function(){
+            resetWordpressHacks();
             tb_show(null,'#TB_inline?height=480&width=480&inlineId=pulsestorm_launcher_thickbox',false);
             $('#pulsestorm_launcher_input').focus();                    
         }    
