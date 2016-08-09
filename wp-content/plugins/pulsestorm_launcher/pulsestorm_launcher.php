@@ -60,9 +60,8 @@ class Pulsestorm_Launcher_Plugin
     
     protected function cleanLabel($label)
     {
-        $label = explode('<', $label);
-        $label = array_shift($label);
-        return $label;
+        $label = preg_replace('%<.+>%','',$label);
+        return trim($label);
     }
     
     protected function getUrlFromSlug($slug)
@@ -97,7 +96,7 @@ class Pulsestorm_Launcher_Plugin
             $terms  = implode(' ', [$slug,$label]);            
             $quickSearch = $this->addMenuToQuickSearchMenus(
                 $url, $label, $terms, $quickSearch
-            );       
+            );    
         }
         $quickSearch = apply_filters('pulsestorm_launcher_menus', $quickSearch);
         return $quickSearch;
@@ -241,10 +240,7 @@ class Pulsestorm_Launcher_Plugin
         
         add_action( 'admin_init', function(){
             register_setting( 'pulsestorm_launcher-group', 'pulsestorm_launcher_trigger_key' );
-        });
-        
-	    
-            
+        });        	                
     }
     
     public function outputJsonWithScriptTag($var_name, $data)
