@@ -1,5 +1,19 @@
 jQuery(function(){
     var $ = jQuery;
+
+    window.pulsestorm_launcher_temp_ajax = function(){
+        var data = {
+            'action':'pulsestorm_launcher_search',
+            'terms':'test terms'
+        };    
+        $.post(ajaxurl, data, function(r){
+            if(!r['links']){return;}
+            $.each(r.links, function(k,link){
+                addLinkToLauncherUi(link.href, link.label);
+            });
+            console.log(r);
+        });
+    };
     
     var searchForLinks = function(terms, objectToSearch){
         var found = {};
@@ -19,11 +33,16 @@ jQuery(function(){
     var renderResults = function(results){
         $('#pulsestorm_launcher_links').html('');
         $.each(results, function(key, value){
-            $('#pulsestorm_launcher_links').append('<li><a href="'+key+'">'+value+'</a></li>');        
+            addLinkToLauncherUi(key, value);            
         });
         
     };
-        
+
+    var addLinkToLauncherUi = function(href, label, div){
+        div = div ? div : 'pulsestorm_launcher_links';
+        $('#pulsestorm_launcher_links').append('<li><a href="'+href+'">'+label+'</a></li>');        
+    };
+            
     var setFirstItemActive = function(){
         $('#pulsestorm_launcher_results ul li').first().addClass('active');          
     };
@@ -169,9 +188,35 @@ jQuery(function(){
         });                
     };
     
+    var handlerForAjaxSearch = function(){
+        var isSearching = false;    
+        $(document).keyup(function(e) {     
+            if(isSearching) { return; }
+            if(!isLauncherWindowUp()) { return; }
+            if([40,38,13].indexOf(e.which) !== -1){return;} //arrows or enter/return             
+            var terms = jQuery('#pulsestorm_launcher_input').val();
+            if(terms.length < 3) { return; }
+            isSearching = true;
+            
+            var data = {
+                'action':'pulsestorm_launcher_search',
+                'terms':terms
+            };    
+            $.post(ajaxurl, data, function(r){
+                if(!r['links']){return;}
+                $.each(r.links, function(k,link){
+                    addLinkToLauncherUi(link.href, link.label, 'pulsestorm_launcher_ajax');
+                });
+                isSearching = false;
+            });
+                    
+            console.log(terms);
+        });     
+    };
+    
     handlerForOpeningLauncher();
     handlerForUpAndDownArrows();
     handlerForTextEntry();
     handlerForEnter();
-    
+    handlerForAjaxSearch();
 });

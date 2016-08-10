@@ -4,5 +4,9 @@
         <ul id="pulsestorm_launcher_links">
         
         </ul>
+        
+        <ul id="pulsestorm_launcher_ajax">
+        
+        </ul>        
     </div>
 </div>

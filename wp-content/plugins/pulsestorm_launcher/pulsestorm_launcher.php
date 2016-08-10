@@ -253,6 +253,149 @@ class Pulsestorm_Launcher_Plugin
         echo '</script>';                
     }
     
+    protected function getSearchTermsFromRequest()
+    {
+        return $_REQUEST['terms'];
+    }
+    
+    protected function setupAjaxPostWPeCSearchProducts()
+    {
+        add_filter('pulsestorm_launcher_ajax_menus', function($links){
+            $terms = $this->getSearchTermsFromRequest();
+            $posts = get_posts([
+                's' => $terms,
+                'post_per_page'=>'10',
+                'paged'=>'1',
+                'post_type'=>'wpsc-product'
+                ]);                
+                
+            foreach($posts as $post)
+            {
+                $links[] = $this->generateEditPostLink(
+                    $post->ID, 
+                    'Product &raquo; ' . $post->post_title . 
+                    ' (' . $post->post_name . ') '
+                );
+            }        
+            return $links;
+        });
+                
+        return ['links'=>$links];       
+    }
+    
+    protected function setupAjaxPostSearchHook()
+    {
+        add_filter('pulsestorm_launcher_ajax_menus', function($links){
+            $terms = $this->getSearchTermsFromRequest();
+            $posts = get_posts([
+                's' => $terms,
+                'post_per_page'=>'10',
+                'paged'=>'1']);                
+                
+            foreach($posts as $post)
+            {
+                $links[] = $this->generateEditPostLink(
+                    $post->ID, 'Post &raquo; ' . $post->post_title);
+            }        
+            return $links;
+        });
+                
+        return ['links'=>$links];   
+    }
+    
+    protected function generateEditWooOrderLink($id, $label)
+    {
+        return $this->generateEditPostLink($id, $label);    
+    }
+    
+    protected function generateEditPostLink($id, $label)
+    {
+        return [
+            'href'  => admin_url('post.php?action=edit') . '&post=' . (integer) $id,
+            'label' => $label
+        ];    
+    }
+    
+    protected function getRequestObjectForWooProductApiCall()
+    {
+        $request = new WP_REST_Request;
+        $request['s']               = 'hello';
+        $request['orderby']         = 'name'; 
+        $request['page']            = '1';
+        $request['per_page']        = '10';
+        return $request;    
+    }
+    
+    protected function getRequestObjectForWooOrderApiCall()
+    {
+        $request = new WP_REST_Request;
+        return $request;
+    }
+    
+    protected function setupAjaxPostWooSearchOrders()
+    {
+        add_filter('pulsestorm_launcher_ajax_menus', function($links){            
+            if(!class_exists('WC_REST_Orders_Controller')) 
+            { 
+                return $links; 
+            }
+            $request            = $this->getRequestObjectForWooOrderApiCall();
+            $request['search']  = $this->getSearchTermsFromRequest();
+            $controller         = new WC_REST_Orders_Controller;
+            $result             = $controller->get_items($request);
+            foreach($result->get_data() as $item)
+            {
+                $links[] = $this->generateEditWooOrderLink(
+                    $item['id'],'Order &raquo; #' . $item['id']);
+            }
+            return $links;
+        });     
+    }
+    
+    protected function setupAjaxPostWooSearchProducts()
+    {
+        add_filter('pulsestorm_launcher_ajax_menus', function($links){            
+            if(!class_exists('WC_REST_Products_Controller')) 
+            { 
+                return $links; 
+            }
+            $request            = $this->getRequestObjectForWooProductApiCall();
+            $request['search']  = $this->getSearchTermsFromRequest();
+            $controller         = new WC_REST_Products_Controller;
+            $result             = $controller->get_items($request);
+            foreach($result->get_data() as $item)
+            {
+                $links[] = $this->generateEditPostLink(
+                    $item['id'],'Product &raquo; ' . $item['name'] . ' (' . $item['slug'] . ')');                
+            }
+            return $links;
+        });    
+    }
+        
+    protected function setupAjaxEndpoint()
+    {
+        add_action( 'wp_ajax_pulsestorm_launcher_search', function(){
+            $links = [];
+            $links = apply_filters('pulsestorm_launcher_ajax_menus', $links);                
+            $data = ['links'=>$links]; 
+            wp_send_json($data);
+            // return 'bar';            
+            wp_die();
+        });
+    }
+    
+    static public function activate()
+    {        
+        $version = '5.6.0';
+        if(!version_compare($version,phpversion(),'<='))
+        {
+            deactivate_plugins( plugin_basename( __FILE__ ) );
+            wp_die(__(
+                sprintf("The Pulsestorm Launcher requires PHP %s or greater.",$version)
+                ));
+        }
+    }
+    
     public function init()
     {
         $this->setupWoocommerceTabsFilter();
@@ -260,9 +403,17 @@ class Pulsestorm_Launcher_Plugin
         $this->renderJsonAndThickbox();           
         $this->renderAdminBarLink();
         $this->setupSettingsPage();
+                
+        $this->setupAjaxPostSearchHook();        
+        $this->setupAjaxPostWooSearchProducts();
+        $this->setupAjaxPostWooSearchOrders();
+        $this->setupAjaxPostWPeCSearchProducts();
         
-
+        $this->setupAjaxEndpoint();
     }
+    
 }
+
+register_activation_hook(__FILE__, ['Pulsestorm_Launcher_Plugin','activate']);
 $pulsestorm_launcher_plugin = new Pulsestorm_Launcher_Plugin;
 $pulsestorm_launcher_plugin->init();
