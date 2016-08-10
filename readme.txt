@@ -12,7 +12,7 @@ The Pulse Storm Launcher provides an admin launcher application, providing navig
 
 == Description ==
 
-The Pulse Storm Launcher provides an admin launcher application, providing navigation-less access to all your admin pages and posts, including support for products and orders in popular Wordpress e-commerce packages like WooCommerce and WP eCommerce.
+Still not sure what we're about?  Watch our [4 minutes introductory screencast](https://vimeo.com/178378720) where all is revealed. 
 
 == Installation ==
 
