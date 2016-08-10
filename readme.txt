@@ -53,7 +53,7 @@ This version is the first version. Users will want to "upgrade" to this version 
 
 == Arbitrary section ==
 
-This plugin provider two filter hooks
+End users programmers can use the following filter hooks to add their own menus to the immediate and ajax launcher results. 
 
     add_filter('pulsestorm_launcher_ajax_menus', function($links){
         return $links;
@@ -62,3 +62,5 @@ This plugin provider two filter hooks
     add_filter('pulsestorm_launcher_menus', function($links){
         return $links;
     });    
+
+Programmers should use the immediate results (`pulsestorm_launcher_menus`) sparingly, as they're loaded into memory on every page load. 
