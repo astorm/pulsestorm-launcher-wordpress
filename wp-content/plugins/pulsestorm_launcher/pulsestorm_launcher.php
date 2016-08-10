@@ -4,7 +4,7 @@
  * @version 1.0
  */
 /*
-Plugin Name: Pulsestorm Launcher
+Plugin Name: Pulse Storm Launcher
 Plugin URI: http://pulsestorm.net/wordpress/pulsestorm_launcher/
 Description: A plugin for "one touch" Wordpress Admin navigation!
 Author: Alan Storm
@@ -221,6 +221,7 @@ class Pulsestorm_Launcher_Plugin
     protected function renderAdminBarLink()
     {
         add_action( 'admin_bar_menu', function($wp_admin_bar){
+            if(!is_admin()){return;}
             $wp_admin_bar->add_node([
                 'id'=>'pulsestorm_launcher_link',
                 'title'=>'Pulse Storm Launcher', 
