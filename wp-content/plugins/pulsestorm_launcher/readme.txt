@@ -60,4 +60,4 @@ End users programmers can use the following filter hooks to add their own menus 
         return $links;
     });    
 
-Programmers should use the immediate results (`pulsestorm_launcher_menus`) sparingly, as they're loaded into memory on every page load. 
+Programmers should use the immediate results (`pulsestorm_launcher_menus`) sparingly, as they're loaded into memory on every page load. See `pulsestorm_launcher.php` for more usage information, as we honor the filter hooks internally. 
