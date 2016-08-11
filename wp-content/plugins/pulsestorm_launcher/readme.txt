@@ -1,6 +1,6 @@
 === Plugin Name ===
 Contributors: alanstorm
-Donate link: http://alanstorm.com
+Donate link: http://alanstorm.com/pulse_storm_launcher_for_wordpress
 Tags: admin, ajax, posts, plugin, navigation
 Requires at least: 4.5.3
 Tested up to: 4.5.3
