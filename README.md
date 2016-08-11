@@ -2,5 +2,4 @@ Pulse Storm Launcher, for WordPress
 --------------------------------------------------
 Just what it ways on the tin.  
 
-<iframe src="https://player.vimeo.com/video/178378720" width="640" height="400" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-<p><a href="https://vimeo.com/178378720">Pulse Storm Launcher for Wordpress</a> from <a href="https://vimeo.com/alanstorm">Alan Storm</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+See [the WordPress readme.txt](https://github.com/astorm/pulsestorm-launcher-wordpress/blob/master/wp-content/plugins/pulsestorm_launcher/readme.txt) for more information or [watch the screencast](https://vimeo.com/178378720) if you're curious what a Pulse Storm Launcher is. 
